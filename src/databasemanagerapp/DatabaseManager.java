@@ -40,20 +40,19 @@ public class DatabaseManager {
         }
     }
 
-//    public String sendExceptionError(Exception exception){
-//        return exception.getMessage();
+//    public String sendExceptionError(Exception exception) {
+//        
 //    }
-    public int insertIntoDatabase(Person personObj, String databaseTabel) {
+
+    public int insertIntoDatabase(Person personObj, String databaseTable) {
         try {
             boolean connectionState = getDatabaseConnection();
             if (connectionState == true) {
 
-                String sqlQueryString = "INSERT INTO " + databaseTabel + " VALUES (?,?,?,?,?,?)";
-                PreparedStatement preparedStatement = connection.prepareStatement(sqlQueryString);
-                /////////////////// person id
 
-                preparedStatement.setString(1, Integer.toString(personObj.getPersonID()));
-                preparedStatement.setString(2, personObj.getPersonFirstName());
+                String sqlQueryString = "INSERT INTO " + databaseTable + " VALUES (?,?,?,?,?,?,?)";
+                PreparedStatement preparedStatement = connection.prepareStatement(sqlQueryString);
+                preparedStatement.setInt(1, personObj.getPersonID());
                 preparedStatement.setString(2, personObj.getPersonFirstName());
                 preparedStatement.setString(3, personObj.getPersonMidName());
                 preparedStatement.setString(4, personObj.getPersonLastName());
@@ -69,11 +68,70 @@ public class DatabaseManager {
         } finally {
             try {
                 connection.close();
-            } catch (Exception exception) {
+                return 0;
+            } catch (SQLException exception) {
                 System.out.println("databasemanagerapp.DatabaseManager.insertIntoDatabase().error: " + exception.getMessage());
+                return 0;
             }
         }
-        return 0;
+    }
+
+    public int updateIntoDatabase(Person personObj, String databaseTable) {
+        try {
+            boolean connectionState = getDatabaseConnection();
+            if (connectionState == true) {
+
+                String sqlQueryString = "UPDATE " + databaseTable + " SET idPerson = ?, PersonFirstName=?,PersonMidName=?,PersonLastName=?,PersonPhoneNumber=?,PersonEmail=? WHERE idPerson=?;";
+                PreparedStatement preparedStatement = connection.prepareStatement(sqlQueryString);
+                preparedStatement.setInt(1, personObj.getPersonID());
+                preparedStatement.setString(2, personObj.getPersonFirstName());
+                preparedStatement.setString(3, personObj.getPersonMidName());
+                preparedStatement.setString(4, personObj.getPersonLastName());
+                preparedStatement.setString(5, personObj.getPersonPhoneNumber());
+                preparedStatement.setString(6, personObj.getPersonEmail());
+                preparedStatement.setInt(7, personObj.getPersonID());
+                return preparedStatement.executeUpdate();
+            } else {
+                System.out.println("databasemanagerapp.DatabaseManager.updateIntoDatabase():ERROR CONNECTION");
+            }
+        } catch (SQLException exception) {
+            System.out.println("databasemanagerapp.DatabaseManager.updateIntoDatabase().error: " + exception.getMessage());
+            return 0;
+        } finally {
+            try {
+                connection.close();
+                return 0;
+            } catch (SQLException exception) {
+                System.out.println("databasemanagerapp.DatabaseManager.updateIntoDatabase().error: " + exception.getMessage());
+                return 0;
+            }
+        }
+    }
+
+    public int deleteFromDatabase(int personID, String databaseTable) {
+        try {
+            boolean connectionState = getDatabaseConnection();
+            if (connectionState == true) {
+
+                String sqlQueryString = "DELETE FROM " + databaseTable + " WHERE idPerson = ?;";
+                PreparedStatement preparedStatement = connection.prepareStatement(sqlQueryString);
+                preparedStatement.setInt(1, personID);
+                return preparedStatement.executeUpdate();
+            } else {
+                System.out.println("databasemanagerapp.DatabaseManager.deleteFromDatabase().ERROR CONNECTION");
+            }
+        } catch (SQLException exception) {
+            System.out.println("databasemanagerapp.DatabaseManager.deleteFromDatabase().error: " + exception.getMessage());
+            return 0;
+        } finally {
+            try {
+                connection.close();
+                return 0;
+            } catch (SQLException exception) {
+                System.out.println("databasemanagerapp.DatabaseManager.deleteFromDatabase().error: " + exception.getMessage());
+                return 0;
+            }
+        }
     }
 
     public String getDatabasePath() {
