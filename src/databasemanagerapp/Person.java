@@ -1,5 +1,7 @@
 package databasemanagerapp;
 
+import java.util.Random;
+
 public class Person {
 
     private int personID;
@@ -18,15 +20,15 @@ public class Person {
         personPhoneNumber = "";
     }
 
-    public Person(int personID, String personFirstName, String personMidName, String personLastName, String personEmail, String personPhoneNumber) {
-        this.personID = personID;
+    public Person(String personFirstName, String personMidName, String personLastName, String personEmail, String personPhoneNumber) {
+        this.personID = new Random().nextInt((int) 10e9);
         this.personFirstName = personFirstName;
         this.personMidName = personMidName;
         this.personLastName = personLastName;
         this.personEmail = personEmail;
         this.personPhoneNumber = personPhoneNumber;
     }
-
+    
     public int getPersonID() {
         return personID;
     }
