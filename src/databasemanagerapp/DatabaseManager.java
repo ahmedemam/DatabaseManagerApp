@@ -9,7 +9,6 @@ public class DatabaseManager {
 
     private String databasePath;
     private String databaseName;
-    // private String databaseTableName;
     private String databaseUsername;
     private String databaseUserPassword;
     Connection connection;
@@ -38,6 +37,9 @@ public class DatabaseManager {
 //    }
     public int insertIntoDatabase(Person personObj, String databaseTabel) {
         try {
+            boolean connectionState=getDatabaseConnection();
+            if(connectionState==true){
+                
             String sqlQueryString="INSERT INTO "+databaseTabel+" VALUES (?,?,?,?,?,?)";
             PreparedStatement preparedStatement=connection.prepareStatement(sqlQueryString);
             /////////////////// person id
@@ -47,9 +49,20 @@ public class DatabaseManager {
             preparedStatement.setString(4, personObj.getPersonPhoneNumber());
             preparedStatement.setString(5, personObj.getPersonEmail());
             return preparedStatement.executeUpdate();
+            }
+            else{
+                System.out.println("databasemanagerapp.DatabaseManager.insertIntoDatabase():ERROR CONNECTION");
+            }
         } catch (SQLException exception) {
             System.out.println("databasemanagerapp.DatabaseManager.insertIntoDatabase().error: "+exception.getMessage());
             return  0;
+        }
+        finally{
+            try {
+                connection.close();
+            } catch (Exception exception) {
+                System.out.println("databasemanagerapp.DatabaseManager.insertIntoDatabase().error: "+exception.getMessage());
+            }
         }
     }
 
