@@ -2,7 +2,11 @@ package databasemanagerapp;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class DatabaseManager {
 
@@ -11,7 +15,7 @@ public class DatabaseManager {
     // private String databaseTableName;
     private String databaseUsername;
     private String databaseUserPassword;
-    Connection connection;
+    static Connection connection;
 
     public DatabaseManager(String databasePath, String databaseName, String databaseUsername, String databaseUserPassword) {
         this.databasePath = databasePath;
@@ -24,7 +28,7 @@ public class DatabaseManager {
         boolean state = true;
         try {
             DriverManager.registerDriver(new com.mysql.jdbc.Driver());
-            connection = DriverManager.getConnection(databasePath + databaseName, databaseUsername, databaseUserPassword);
+            connection = DriverManager.getConnection(databasePath + "/"+databaseName, databaseUsername, databaseUserPassword);
             return true;
 
         } catch (SQLException exception) {
@@ -53,6 +57,17 @@ public class DatabaseManager {
     }
 
     public static void main(String[] args) {
-
+        try {
+            DatabaseManager DBM =  new DatabaseManager("jdbc:mysql://localhost:3306", "book", "Shawkat", "root");
+            DBM.getDatabaseConnection();
+            Statement stmt = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            String queryString = new String("select * from Person");
+            ResultSet rs = stmt.executeQuery(queryString) ;
+            while(rs.next()){
+                System.out.println(rs.getString(2));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DatabaseManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }
