@@ -2,6 +2,7 @@ package databasemanagerapp;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public class DatabaseManager {
@@ -26,7 +27,6 @@ public class DatabaseManager {
             DriverManager.registerDriver(new com.mysql.jdbc.Driver());
             connection = DriverManager.getConnection(databasePath + databaseName, databaseUsername, databaseUserPassword);
             return true;
-
         } catch (SQLException exception) {
             System.out.println("databasemanagerapp.DatabaseManager.databaseConnection().error: " + exception.getMessage());
             return false;
@@ -36,6 +36,23 @@ public class DatabaseManager {
 //    public String sendExceptionError(Exception exception){
 //        return exception.getMessage();
 //    }
+    public int insertIntoDatabase(Person personObj, String databaseTabel) {
+        try {
+            String sqlQueryString="INSERT INTO "+databaseTabel+" VALUES (?,?,?,?,?,?)";
+            PreparedStatement preparedStatement=connection.prepareStatement(sqlQueryString);
+            /////////////////// person id
+            preparedStatement.setString(1, personObj.getPersonFirstName());
+            preparedStatement.setString(2, personObj.getPersonMidName());
+            preparedStatement.setString(3, personObj.getPersonLastName());
+            preparedStatement.setString(4, personObj.getPersonPhoneNumber());
+            preparedStatement.setString(5, personObj.getPersonEmail());
+            return preparedStatement.executeUpdate();
+        } catch (SQLException exception) {
+            System.out.println("databasemanagerapp.DatabaseManager.insertIntoDatabase().error: "+exception.getMessage());
+            return  0;
+        }
+    }
+
     public String getDatabasePath() {
         return databasePath;
     }
@@ -52,7 +69,22 @@ public class DatabaseManager {
         this.databaseName = databaseName;
     }
 
-    public static void main(String[] args) {
+    public String getDatabaseUsername() {
+        return databaseUsername;
+    }
 
+    public void setDatabaseUsername(String databaseUsername) {
+        this.databaseUsername = databaseUsername;
+    }
+
+    public String getDatabaseUserPassword() {
+        return databaseUserPassword;
+    }
+
+    public void setDatabaseUserPassword(String databaseUserPassword) {
+        this.databaseUserPassword = databaseUserPassword;
+    }
+
+    public static void main(String[] args) {
     }
 }
