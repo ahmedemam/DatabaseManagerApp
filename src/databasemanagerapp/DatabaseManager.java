@@ -11,6 +11,7 @@ public class DatabaseManager {
     // private String databaseTableName;
     private String databaseUsername;
     private String databaseUserPassword;
+    Connection connection;
 
     public DatabaseManager(String databasePath, String databaseName, String databaseUsername, String databaseUserPassword) {
         this.databasePath = databasePath;
@@ -19,12 +20,11 @@ public class DatabaseManager {
         this.databaseUserPassword = databaseUserPassword;
     }
 
-
-    public boolean databaseConnection() {
+    public boolean getDatabaseConnection() {
         boolean state = true;
         try {
             DriverManager.registerDriver(new com.mysql.jdbc.Driver());
-            Connection connection = DriverManager.getConnection(databasePath + databaseName, databaseUsername, databaseUserPassword);
+            connection = DriverManager.getConnection(databasePath + databaseName, databaseUsername, databaseUserPassword);
             return true;
 
         } catch (SQLException exception) {
@@ -53,6 +53,6 @@ public class DatabaseManager {
     }
 
     public static void main(String[] args) {
-        
+
     }
 }
